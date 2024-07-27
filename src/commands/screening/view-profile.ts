@@ -16,6 +16,7 @@ const command: Command = {
 	ownerOnly: false,
 	devOnly: false,
 	dmPermission: true,
+	allowTargetingBots: false,
 	options: [
 		{
 			type: ApplicationCommandOptionType.User,
@@ -47,12 +48,12 @@ const command: Command = {
 		const acceptBtn = new ButtonBuilder()
 			.setCustomId(`accept-${user.id}`)
 			.setLabel('Accept')
-			.setEmoji('✅')
+			.setEmoji('✔')
 			.setStyle(ButtonStyle.Success);
 		const declineBtn = new ButtonBuilder()
 			.setCustomId(`decline-${user.id}`)
 			.setLabel('Decline')
-			.setEmoji('❌')
+			.setEmoji('✖')
 			.setStyle(ButtonStyle.Danger);
 
 		const row = new ActionRowBuilder().addComponents(acceptBtn, declineBtn);
@@ -92,8 +93,9 @@ const command: Command = {
 				});
 				await interaction.editReply({
 					content: `✅ **${user.displayName} has accepted your screening request.**
-                    \n> Introduction: "${userInfo.introduction}"
-                    > Gender: ${userInfo.gender}`,
+                    \n
+					> **Introduction:** "${userInfo.introduction}"
+                    > **Gender:** ${userInfo.gender}`,
 				});
 
 				responded = true;

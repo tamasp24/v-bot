@@ -10,7 +10,7 @@ import {
 	TextInputStyle,
 } from 'discord.js';
 import { Command } from '../../types/command';
-import prisma from '../../utils/prisma';
+import updateUser from '../../utils/updateUser';
 
 const command: Command = {
 	name: 'profile',
@@ -19,6 +19,7 @@ const command: Command = {
 	ownerOnly: false,
 	devOnly: false,
 	dmPermission: false,
+	allowTargetingBots: false,
 	options: [
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -94,19 +95,11 @@ const command: Command = {
 						components: [],
 					});
 				else
-					prisma.user
-						.upsert({
-							where: {
-								discord_id: interaction.user.id,
-							},
-							update: {
-								gender: values[0],
-							},
-							create: {
-								discord_id: interaction.user.id,
-								gender: values[0],
-							},
-						})
+					updateUser({
+						discord_id: interaction.user.id,
+						field: 'gender',
+						value: values[0],
+					})
 						.then(async () => {
 							return await reply.edit({
 								// @ts-ignore
@@ -153,19 +146,11 @@ const command: Command = {
 						'introduction-content'
 					);
 
-					prisma.user
-						.upsert({
-							where: {
-								discord_id: interaction.user.id,
-							},
-							update: {
-								introduction: intro,
-							},
-							create: {
-								discord_id: interaction.user.id,
-								introduction: intro,
-							},
-						})
+					updateUser({
+						discord_id: interaction.user.id,
+						field: 'introduction',
+						value: intro,
+					})
 						.then(async () => {
 							return await response.reply({
 								// @ts-ignore

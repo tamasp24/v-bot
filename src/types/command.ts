@@ -14,6 +14,7 @@ export type Command = {
 	devOnly: boolean;
 	options: APIApplicationCommandOption[];
 	dmPermission: boolean;
+	allowTargetingBots: boolean;
 	execute: (
 		client: Client,
 		interaction: ChatInputCommandInteraction,

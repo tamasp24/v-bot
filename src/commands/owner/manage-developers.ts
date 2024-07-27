@@ -1,6 +1,7 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Command } from '../../types/command';
 import prisma from '../../utils/prisma';
+import updateUser from '../../utils/updateUser';
 
 const command: Command = {
 	name: 'developer',
@@ -9,6 +10,7 @@ const command: Command = {
 	ownerOnly: true,
 	devOnly: false,
 	dmPermission: false,
+	allowTargetingBots: false,
 	options: [
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -54,19 +56,11 @@ const command: Command = {
 			});
 
 		if (action === 'add') {
-			prisma.user
-				.upsert({
-					where: {
-						discord_id: target.id,
-					},
-					update: {
-						developer: true,
-					},
-					create: {
-						discord_id: target.id,
-						developer: true,
-					},
-				})
+			updateUser({
+				discord_id: target.id,
+				field: 'developer',
+				value: true,
+			})
 				.then(async () => {
 					await interaction.reply({
 						content: `🛠 <@${target.id}> has been given developer permissions. Remember, with great power comes great responsibility.`,
@@ -79,15 +73,11 @@ const command: Command = {
 					});
 				});
 		} else if (action === 'remove') {
-			prisma.user
-				.update({
-					where: {
-						discord_id: target.id,
-					},
-					data: {
-						owner: false,
-					},
-				})
+			updateUser({
+				discord_id: target.id,
+				field: 'developer',
+				value: false,
+			})
 				.then(async () => {
 					await interaction.reply({
 						content: `<@${target.id}>'s developer permissions have been revoked.`,
@@ -96,7 +86,9 @@ const command: Command = {
 				.catch(async (err) => {
 					console.log(err);
 					await interaction.reply({
-						content: `Database operation failed. Unable to give <@${target.id}> permissions.`,
+						content: `Database operation failed. Unable to give <@${
+							target.id
+						}> permissions. Message:\n> ${err.toString()}`,
 					});
 				});
 		}

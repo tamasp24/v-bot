@@ -12,6 +12,7 @@ const command: Command = {
 	ownerOnly: false,
 	devOnly: false,
 	dmPermission: false,
+	allowTargetingBots: false,
 	options: [
 		{
 			type: ApplicationCommandOptionType.String,

@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType } from 'discord.js';
 import { Command } from '../../types/command';
-import prisma from '../../utils/prisma';
+import updateUser from '../../utils/updateUser';
 
 const command: Command = {
 	name: 'owner',
@@ -9,6 +9,7 @@ const command: Command = {
 	ownerOnly: true,
 	devOnly: false,
 	dmPermission: false,
+	allowTargetingBots: false,
 	options: [
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -55,19 +56,11 @@ const command: Command = {
 			});
 
 		if (action === 'add') {
-			prisma.user
-				.upsert({
-					where: {
-						discord_id: target.id,
-					},
-					update: {
-						owner: true,
-					},
-					create: {
-						discord_id: target.id,
-						owner: true,
-					},
-				})
+			updateUser({
+				discord_id: target.id,
+				field: 'owner',
+				value: true,
+			})
 				.then(async () => {
 					await interaction.reply({
 						content: `👑 <@${target.id}> has been given owner permissions. Remember, with great power comes great responsibility.`,
@@ -86,15 +79,11 @@ const command: Command = {
 					ephemeral: true,
 				});
 
-			prisma.user
-				.update({
-					where: {
-						discord_id: target.id,
-					},
-					data: {
-						owner: false,
-					},
-				})
+			updateUser({
+				discord_id: target.id,
+				field: 'owner',
+				value: false,
+			})
 				.then(async () => {
 					await interaction.reply({
 						content: `<@${target.id}>'s owner permissions have been revoked.`,
