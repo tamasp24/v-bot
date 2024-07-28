@@ -1,6 +1,8 @@
 import {
 	ActionRowBuilder,
 	ApplicationCommandOptionType,
+	ButtonBuilder,
+	ButtonStyle,
 	Interaction,
 	ModalBuilder,
 	ModalSubmitInteraction,
@@ -11,6 +13,7 @@ import {
 } from 'discord.js';
 import { Command } from '../../types/command';
 import updateUser from '../../utils/updateUser';
+import prisma from '../../utils/prisma';
 
 const command: Command = {
 	name: 'profile',
@@ -25,12 +28,30 @@ const command: Command = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'gender',
-			description: 'Set your gender.',
+			description: 'Set your gender',
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'introduction',
-			description: 'Set your introduction.',
+			description: 'Set your introduction',
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'age',
+			description: 'Set your age',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'age-value',
+					required: true,
+					description: 'Must be a whole number',
+				},
+			],
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'delete',
+			description: `Delete your profile from the bot's database.`,
 		},
 	],
 	execute: async (client, interaction, requester) => {
@@ -173,6 +194,87 @@ const command: Command = {
 							});
 						});
 				});
+		} else if (subcommand === 'age') {
+			const age = interaction.options.getInteger('age-value');
+
+			if (!age) {
+				return await interaction.reply({
+					content: `No age was provided.`,
+					ephemeral: true,
+				});
+			}
+
+			updateUser({
+				discord_id: interaction.user.id,
+				field: 'age',
+				value: age,
+			})
+				.then(async () => {
+					return await interaction.reply({
+						content: `Your age has been set to **${age}**.`,
+						ephemeral: true,
+					});
+				})
+				.catch(async (err) => {
+					console.log(err);
+					return await interaction.reply({
+						content: `An error occurred. Message:\n${err.toString()}`,
+						ephemeral: true,
+					});
+				});
+		} else if (subcommand === 'delete') {
+			const YES_BUTTON = new ButtonBuilder()
+				.setCustomId('yes')
+				.setLabel('Yes')
+				.setStyle(ButtonStyle.Success);
+			const NO_BUTTON = new ButtonBuilder()
+				.setCustomId('no')
+				.setLabel('No')
+				.setStyle(ButtonStyle.Danger);
+
+			const row = new ActionRowBuilder().addComponents(
+				YES_BUTTON,
+				NO_BUTTON
+			);
+
+			const prompt = await interaction.reply({
+				content: `Are you sure you want to delete the information I have on file?`,
+				// @ts-ignore
+				components: [row],
+				ephemeral: true,
+			});
+
+			const promptListener = prompt.createMessageComponentCollector({
+				time: 20_000,
+				filter: (i) => i.user.id === interaction.user.id,
+			});
+
+			promptListener.on('collect', async (result: Interaction) => {
+				// @ts-ignore
+				if (result.customId === 'yes') {
+					prisma.user
+						.delete({
+							where: {
+								discord_id: interaction.user.id,
+							},
+						})
+						.then(async () => {
+							return await interaction.editReply({
+								content: `**Your profile has been deleted.**`,
+								components: [],
+							});
+						})
+						.catch(async (err) => {
+							console.log(err);
+							return await interaction.editReply({
+								content: `An error occurred. Message:\n${err.toString()}`,
+								components: [],
+							});
+						});
+				} else await interaction.deleteReply();
+
+				promptListener.stop();
+			});
 		}
 	},
 };
