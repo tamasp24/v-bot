@@ -13,7 +13,9 @@ datasource db {
 model User {
   discord_id String @id
   profile_created DateTime @default(now())
+  profile_updated DateTime @default(now())
   gender String?
+  age Int?
   introduction String?
   owner Boolean @default(false)
   developer Boolean @default(false)
