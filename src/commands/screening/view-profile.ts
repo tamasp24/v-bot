@@ -13,6 +13,7 @@ const command: Command = {
 	name: 'screen',
 	description: `View a user's profile. They will get a request, which they have to accept. Open DMs required.`,
 	aliases: [],
+	enabled: true,
 	ownerOnly: false,
 	devOnly: false,
 	dmPermission: true,

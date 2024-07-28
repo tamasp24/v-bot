@@ -9,6 +9,7 @@ const command: Command = {
 	name: 'ping',
 	description: 'Responds with a test reply.',
 	aliases: [],
+	enabled: true,
 	ownerOnly: false,
 	devOnly: false,
 	dmPermission: false,

@@ -13,6 +13,13 @@ module.exports = async (client: Client, interaction: Interaction) => {
 		(cmd) => cmd.name === interaction.commandName
 	);
 
+	if (commandRun?.enabled === false) {
+		return interaction.reply({
+			content: 'This command is disabled.',
+			ephemeral: true,
+		});
+	}
+
 	const requester = await prisma.user.findFirst({
 		where: {
 			discord_id: interaction.user.id,
@@ -37,7 +44,7 @@ module.exports = async (client: Client, interaction: Interaction) => {
 		!DEV_COMMANDS_WHITELIST.includes(interaction.user.id)
 	) {
 		return interaction.reply({
-			content: 'Only devs can use this command.',
+			content: 'Only developers can use this command.',
 			ephemeral: true,
 		});
 	}

@@ -16,6 +16,7 @@ const command: Command = {
 	name: 'profile',
 	description: 'Manage your profile.',
 	aliases: [],
+	enabled: true,
 	ownerOnly: false,
 	devOnly: false,
 	dmPermission: false,

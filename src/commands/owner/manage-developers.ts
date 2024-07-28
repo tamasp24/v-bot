@@ -7,6 +7,7 @@ const command: Command = {
 	name: 'developer',
 	description: 'Manage developers.',
 	aliases: [],
+	enabled: true,
 	ownerOnly: true,
 	devOnly: false,
 	dmPermission: false,

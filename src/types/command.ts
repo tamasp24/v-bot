@@ -10,6 +10,7 @@ export type Command = {
 	name: string;
 	description: string;
 	aliases: string[];
+	enabled: boolean;
 	ownerOnly: boolean;
 	devOnly: boolean;
 	options: APIApplicationCommandOption[];

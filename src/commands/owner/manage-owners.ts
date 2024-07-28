@@ -6,6 +6,7 @@ const command: Command = {
 	name: 'owner',
 	description: 'Manage owners.',
 	aliases: [],
+	enabled: true,
 	ownerOnly: true,
 	devOnly: false,
 	dmPermission: false,

@@ -9,7 +9,9 @@ module.exports = async (client: Client) => {
 	const commands: Command[] = getCommands();
 
 	for (const command of commands) {
-		let { name, description, options, dmPermission } = command;
+		let { name, description, options, dmPermission, enabled } = command;
+
+		if (enabled === false) continue;
 
 		await client.application?.commands.create({
 			name,
