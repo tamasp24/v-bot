@@ -1,10 +1,12 @@
 import { User } from '@prisma/client';
 import prisma from './prisma';
 
+type Field = keyof User;
+
 type UpdateUserRequest = {
 	discord_id: string;
-	field: keyof User;
-	value: any;
+	field: Field;
+	value: User[Field];
 };
 
 const updateUser = (data: UpdateUserRequest): Promise<User> => {
