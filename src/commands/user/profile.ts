@@ -33,6 +33,8 @@ const command: Command = {
 		},
 	],
 	execute: async (client, interaction, requester) => {
+		const INTRODUCTION_MODAL_TIMEOUT = 60_000;
+		const GENDER_SELECT_TIMEOUT = 30_000;
 		const subcommand = interaction.options.getSubcommand();
 
 		const modal = new ModalBuilder()
@@ -51,8 +53,8 @@ const command: Command = {
 					.setEmoji('♀️')
 					.setValue('female'),
 				new StringSelectMenuOptionBuilder()
-					.setLabel('Attack Helicopter')
-					.setEmoji('🚁')
+					.setLabel('Prefer not to say')
+					.setEmoji('👤')
 					.setValue('other')
 			);
 
@@ -80,7 +82,7 @@ const command: Command = {
 
 			const collector = reply.createMessageComponentCollector({
 				filter: (i) => i.user.id === interaction.user.id,
-				time: 30_000,
+				time: GENDER_SELECT_TIMEOUT,
 			});
 
 			let respondedBeforeTimeout: boolean = false;
@@ -139,7 +141,7 @@ const command: Command = {
 					filter: (i) =>
 						i.customId ===
 						`introduction-modal-${interaction.user.id}`,
-					time: 60_000,
+					time: INTRODUCTION_MODAL_TIMEOUT,
 				})
 				.then(async (response: ModalSubmitInteraction) => {
 					let intro = response.fields.getTextInputValue(
