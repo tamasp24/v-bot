@@ -43,17 +43,19 @@ const command: Command = {
 		const action = interaction.options.getSubcommand();
 		const target = interaction.options.getUser('user');
 
-		if (!target)
+		if (!target) {
 			return await interaction.reply({
 				content: 'No user provided.',
 				ephemeral: true,
 			});
+		}
 
-		if (target.bot)
+		if (target.bot) {
 			return await interaction.reply({
 				content: 'I only serve humans.',
 				ephemeral: true,
 			});
+		}
 
 		if (action === 'add') {
 			updateUser({

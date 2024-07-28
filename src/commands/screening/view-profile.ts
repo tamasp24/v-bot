@@ -33,17 +33,19 @@ const command: Command = {
 			},
 		});
 
-		if (!user)
+		if (!user) {
 			return await interaction.reply({
 				content: `No user specified.`,
 				ephemeral: true,
 			});
+		}
 
-		if (user.bot)
+		if (user.bot) {
 			return await interaction.reply({
 				content: `Bots cannot be sent screening requests.`,
 				ephemeral: true,
 			});
+		}
 
 		const acceptBtn = new ButtonBuilder()
 			.setCustomId(`accept-${user.id}`)

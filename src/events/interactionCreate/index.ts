@@ -23,22 +23,24 @@ module.exports = async (client: Client, interaction: Interaction) => {
 		commandRun?.ownerOnly &&
 		!requester?.owner &&
 		DEV_COMMANDS_WHITELIST?.includes(interaction.user.id) === false
-	)
+	) {
 		return await interaction.reply({
 			content: '🚫 You must be an owner to use this command.',
 			ephemeral: true,
 		});
+	}
 
 	if (
 		commandRun?.devOnly &&
 		!requester?.owner &&
 		!requester?.developer &&
 		!DEV_COMMANDS_WHITELIST.includes(interaction.user.id)
-	)
+	) {
 		return interaction.reply({
 			content: 'Only devs can use this command.',
 			ephemeral: true,
 		});
+	}
 
 	commandRun?.execute(client, interaction, requester);
 };

@@ -91,12 +91,12 @@ const command: Command = {
 				// @ts-ignore
 				let values = collected.values;
 
-				if (values[0] === 'other')
+				if (values[0] === 'other') {
 					await reply.edit({
 						content: `https://tenor.com/view/rick-roll-rick-ashley-never-gonna-give-you-up-gif-22113173`,
 						components: [],
 					});
-				else
+				} else {
 					updateUser({
 						discord_id: interaction.user.id,
 						field: 'gender',
@@ -117,6 +117,7 @@ const command: Command = {
 								components: [],
 							});
 						});
+				}
 
 				respondedBeforeTimeout = true;
 
